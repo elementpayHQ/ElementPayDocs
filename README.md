@@ -47,7 +47,7 @@ Creates an onramp order from plaintext fiat payload. The server applies markup, 
 | `account_number` | string | No       | Required for `cashout_type = PAYBILL`           |
 | `reference`      | string | No       | Optional reference attached to the payment      |
 
-### 📅 Example Request
+### 📅 Example Request for Payment
 
 ```json
 POST /orders/create
