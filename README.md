@@ -29,6 +29,7 @@ Element Pay supports two types of transactions:
 
 | Network | Token |
 |---------|-------|
+| Lisk    | USDT  |
 | Scroll  | USDC  |
 | Base    | USDC  |
 
