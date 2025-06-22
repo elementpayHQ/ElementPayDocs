@@ -74,27 +74,28 @@ Content-Type: application/json
 
 ---
 
-## 📩 2. Create Onramp Order
+## 📩 2. Create Onramp Order (Updated)
 
 **POST** `/orders/create`
 
 Creates an onramp order from plaintext fiat payload. The server applies markup, encrypts the message, and submits the order on-chain.
 
-### ✅ Request Body
+### ✅ Request Body (UPDATED)
 
 #### Root Fields
 
-| Field          | Type   | Required | Description                                       |
-| -------------- | ------ | -------- | ------------------------------------------------- |
-| `user_address` | string | Yes      | User's wallet address (e.g. `0x123...`)           |
-| `token`        | string | Yes      | Address of token to receive                       |
-| `order_type`   | int    | Yes      | Must be `0` for Onramp                            |
-| `fiat_payload` | object | Yes      | Fiat payment details (see below)                  |
+| Field          | Type   | Required | Description                                                  |
+|----------------|--------|----------|--------------------------------------------------------------|
+| `user_address` | string | Yes      | User's wallet address (e.g. `0x123...`)                      |
+| `token`        | string | Yes      | Address of token to receive                                  |
+| `order_type`   | int    | Yes      | Must be `0` for Onramp                                       |
+| `webhook_url`  | string | Yes      | URL to receive order status updates (settled/failed/etc)     |
+| `fiat_payload` | object | Yes      | Fiat payment details (see below)                             |
 
 #### `fiat_payload` Schema
 
 | Field            | Type   | Required | Description                                     |
-| ---------------- | ------ | -------- | ----------------------------------------------- |
+|------------------|--------|----------|-------------------------------------------------|
 | `amount_fiat`    | float  | Yes      | Amount in KES                                   |
 | `cashout_type`   | string | Yes      | Must be `"PHONE"` (currently supported type)    |
 | `phone_number`   | string | Yes      | M-PESA number in format `2547XXXXXXXX` (no `+`) |
@@ -104,7 +105,7 @@ Creates an onramp order from plaintext fiat payload. The server applies markup, 
 | `account_number` | string | No       | Required for `cashout_type = PAYBILL`           |
 | `reference`      | string | No       | Optional reference attached to the payment      |
 
-### 📅 Example Request for Onramp
+### 🆕 Example Request with Webhook
 
 ```json
 POST /orders/create
@@ -113,15 +114,22 @@ Headers:
 Content-Type: application/json
 
 {
-  "user_address": "0xabc123...",
-  "token": "0x06efdbff2a14a7c8e15944d1f4a48f9f95f663a4",
+  "user_address": "0x40C2f2e0326bD1f647fbeB8732529e08B4DB309f",
+  "token": "0x05D032ac25d322df992303dCa074EE7392C117b9",
   "order_type": 0,
+  "webhook_url": "https://crawdad-modern-squid.ngrok-free.app/webhooks/test",
   "fiat_payload": {
-    "amount_fiat": 1000,
-    "phone_number": "254712345678",
-    "cashout_type": "PHONE"
+    "amount_fiat": 10,
+    "cashout_type": "PHONE",
+    "phone_number": "254712531490"
   }
 }
+```
+
+> **ℹ️ Note:** This `webhook_url` will receive a POST request when the order is `SETTLED`, `FAILED`, or otherwise updated.
+> Sample webhook response
+```json
+{'order_id': 'dff5f84c7539d885248921cd43f28b84cb6f5504a7f92f608a2052c15738b6bb', 'status': 'settled', 'amount_fiat': 10.0, 'currency': 'KES', 'token': 'LISK_USDT', 'amount_crypto': 0.075529, 'file_id': 'EPay-dff5f84c75', 'transaction_hash': 'dda8c65e8825c3a870fdce03b32db2199d2d7f351a2179eb6234bec3a2621f79', 'reason': None}
 ```
 
 ### ✅ Example Response
