@@ -27,11 +27,13 @@ Element Pay supports two types of transactions:
 
 ### ✅ Supported Tokens
 
-| Network | Token |
-|---------|-------|
-| Lisk    | USDT  |
-| Scroll  | USDC  |
-| Base    | USDC  |
+| Network   | Token |
+|-----------|-------|
+| Lisk      | USDT  |
+| Arbitrum  | WXM   |
+| Scroll    | USDC  |
+| Base      | USDC  |
+| Ethereum  | ETH   |
 
 For Offramp orders, **users must first approve** the contract to spend their tokens before calling the API.
 
@@ -128,6 +130,7 @@ Content-Type: application/json
 
 > **ℹ️ Note:** This `webhook_url` will receive a POST request when the order is `SETTLED`, `FAILED`, or otherwise updated.
 > Sample webhook response
+
 ```json
 {'order_id': 'dff5f84c7539d885248921cd43f28b84cb6f5504a7f92f608a2052c15738b6bb', 'status': 'settled', 'amount_fiat': 10.0, 'currency': 'KES', 'token': 'LISK_USDT', 'amount_crypto': 0.075529, 'file_id': 'EPay-dff5f84c75', 'transaction_hash': 'dda8c65e8825c3a870fdce03b32db2199d2d7f351a2179eb6234bec3a2621f79', 'reason': None}
 ```
@@ -181,7 +184,7 @@ Use the transaction hash returned in `/orders/create` to fetch the latest order 
 
 ---
 
-## 🚨 Webhooks 
+## 🚨 Webhooks
 
 Webhook URLs must be submitted to the dev team during onboarding. In future, webhook URLs will be linked to your API key.
 
@@ -211,9 +214,9 @@ Use this endpoint to get the latest conversion rate from supported tokens (USDC,
 
 ### ✅ Query Parameters
 
-| Param     | Required | Description                          |
-|-----------|----------|--------------------------------------|
-| currency  | No       | Either `usdc` (default) or `eth`     |
+| Param     | Required | Description                                                      |
+|-----------|----------|------------------------------------------------------------------|
+| currency  | No       | One of `usdc`, `eth`, `wxm`, `usdt_lisk` (default: `usdc`)       |
 
 ### 📅 Example Request
 
@@ -318,5 +321,4 @@ Use this endpoint to build order tracking, payment feedback, or trigger webhook 
 
 ---
 
-
-For questions, email: **elementpay.info@gmail.com**
+For questions, email: **<elementpay.info@gmail.com>**
