@@ -39,9 +39,13 @@ For Offramp orders, **users must first approve** the contract to spend their tok
 
 ---
 
-## 💸 1. Offramp Flow – Token Approval Required
+## 💸 1. Offramp Flow – Payout to MPESA (Token Approval Required)
 
-Before creating an Offramp order (`order_type: 1`), the user **must call `approve()`** on the token contract to allow Element Pay to withdraw the specified amount.
+An **Offramp order (`order_type: 1`)** allows a user to **cash out crypto directly to a mobile money account (MPESA)**. The tokens are withdrawn from the user's connected wallet and settled to the **MPESA phone number** provided in the request.
+
+> 🔐 **Important:** Before creating an Offramp order, the user **must approve** the Element Pay smart contract to spend their tokens. This is a required step for all ERC-20 tokens.
+
+---
 
 ### 🪙 Step 1: Approve the Token
 
@@ -55,6 +59,8 @@ If the `approve` step is skipped, the smart contract transaction will fail.
 ---
 
 ### 📥 Step 2: Create Offramp Order
+
+Send a POST request to initiate the Offramp payout. This will transfer tokens from the connected wallet to the recipient's MPESA phone number.
 
 ```json
 POST /orders/create
@@ -73,16 +79,40 @@ Content-Type: application/json
   }
 }
 ```
+> 🧾 This request will:
+> 
+> - Transfer the approved token amount from the user's wallet  
+> - Convert the tokens to fiat (KES)  
+> - Payout to the specified MPESA phone number  
+
 
 ---
 
-## 📩 2. Create Onramp Order (Updated)
+## 📩 2. Create Onramp Order
 
-**POST** `/orders/create`
+An **Onramp order (`order_type: 0`)** allows anyone—including international companies or developers—to receive crypto payments in a wallet address after a user pays in **fiat (KES)** via MPESA.
+
+You can:
+- Use this to **accept payments from users in Kenya** through MPESA.
+- Provide a **webhook URL** to receive real-time updates when the payment is completed or fails.
+- Use the webhook response to **update your systems**, **trigger workflows**, or **record the payment** in your database.
+
+ElementPay handles:
+- Converting the fiat payment (e.g., from a phone number) into crypto.
+- Sending the crypto to the wallet address provided.
+- Sending a webhook notification to the given `webhook_url`.
+
+> 💡 This is ideal for businesses, platforms, or wallets looking to **programmatically accept MPESA payments** and receive crypto on-chain in return.
+
+---
+
+### **POST** `/orders/create`
 
 Creates an onramp order from plaintext fiat payload. The server applies markup, encrypts the message, and submits the order on-chain.
 
-### ✅ Request Body (UPDATED)
+---
+
+### ✅ Request Body
 
 #### Root Fields
 
@@ -127,6 +157,14 @@ Content-Type: application/json
   }
 }
 ```
+
+> 🧾 This request will:
+>
+> - Accept an MPESA payment from the provided phone number by sending an STK push to their number where they only have to input their security PIN  
+> - Convert the KES amount into crypto  
+> - Send the tokens to the provided wallet address  
+> - Notify the webhook URL of the final status (settled/failed)  
+
 
 > **ℹ️ Note:** This `webhook_url` will receive a POST request when the order is `SETTLED`, `FAILED`, or otherwise updated.
 > Sample webhook response
