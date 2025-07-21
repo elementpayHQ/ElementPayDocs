@@ -242,6 +242,14 @@ Webhook payload:
 }
 ```
 
+> 📡 Integrator Responsibilities:
+> 
+> - Your system must be able to receive POST requests to the `webhook_url` you provide.
+> - On receiving the webhook, **verify the `status` field** (`SETTLED`, `FAILED`, etc).
+> - Use the `amount_fiat` and `status` fields to **trigger appropriate business logic** (e.g. unlock a solar charger for X minutes or save the details of the user who paid).
+> - Optionally store `order_id` or `transaction_hash` for audit and traceability.
+
+
 ---
 
 ## 💱 4. Fetch Token to KES Rates
